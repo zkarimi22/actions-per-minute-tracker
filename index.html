@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APM Tracker - Actions Per Minute</title>
+    <style>
+        :root {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 210 40% 98%;
+            --primary-foreground: 222.2 84% 4.9%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 212.7 26.8% 83.9%;
+            --success: 142.1 76.2% 36.3%;
+            --warning: 47.9 95.8% 53.1%;
+            --radius: 0.5rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .header p {
+            color: hsl(var(--muted-foreground));
+            font-size: 1.1rem;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Phase 1: Setup */
+        .setup-phase {
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            animation: scaleIn 0.5s ease-out 0.4s both;
+        }
+
+        .action-input-section {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-input-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            font-size: 1rem;
+            color: hsl(var(--foreground));
+            transition: all 0.2s ease;
+        }
+
+        .action-input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        .add-action-btn {
+            padding: 12px 24px;
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: translateY(0);
+        }
+
+        .add-action-btn:hover {
+            background: hsl(var(--primary) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-action-btn:disabled {
+            background: hsl(var(--muted));
+            color: hsl(var(--muted-foreground));
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .actions-list {
+            min-height: 200px;
+            border: 2px dashed hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .actions-list.has-actions {
+            border-style: solid;
+            background: hsl(var(--card));
+        }
+
+        .empty-state {
+            text-align: center;
+            color: hsl(var(--muted-foreground));
+            padding: 3rem 1rem;
+        }
+
+        .action-item {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            transition: all 0.2s ease;
+            user-select: none;
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .action-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .action-item.drag-over {
+            border-color: hsl(var(--ring));
+            background: hsl(var(--accent));
+        }
+
+        .action-text {
+            font-weight: 500;
+        }
+
+        .action-duration {
+            font-size: 0.9rem;
+            color: hsl(var(--muted-foreground));
+            font-weight: 600;
+        }
+
+        .action-item.completed {
+            opacity: 0.7;
+        }
+
+        .action-item.completed .action-text {
+            text-decoration: line-through;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .action-item.active {
+            border-color: hsl(var(--ring));
+            background: hsl(var(--accent));
+        }
+
+        .remove-action {
+            background: hsl(var(--destructive));
+            color: hsl(var(--destructive-foreground));
+            border: none;
+            border-radius: var(--radius);
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .action-item:hover .remove-action {
+            opacity: 1;
+        }
+
+        .start-session-btn {
+            width: 100%;
+            padding: 16px;
+            background: hsl(var(--success));
+            color: hsl(var(--primary-foreground));
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: translateY(0);
+        }
+
+        .start-session-btn:hover:not(:disabled) {
+            background: hsl(var(--success) / 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .start-session-btn:disabled {
+            background: hsl(var(--muted));
+            color: hsl(var(--muted-foreground));
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Phase 2: Active Session */
+        .active-phase {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .main-timer-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            animation: slideInLeft 0.6s ease-out 0.2s both;
+        }
+
+        .current-action {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+            margin-bottom: 2rem;
+            line-height: 1.3;
+        }
+
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 700;
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            color: hsl(var(--primary));
+            margin-bottom: 2rem;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+        }
+
+        .timer-status {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .timer-status.active {
+            background: hsl(var(--success) / 0.2);
+            color: hsl(var(--success));
+            border: 1px solid hsl(var(--success) / 0.3);
+        }
+
+        .timer-status.paused {
+            background: hsl(var(--warning) / 0.2);
+            color: hsl(var(--warning));
+            border: 1px solid hsl(var(--warning) / 0.3);
+        }
+
+        .timer-status.lost-time {
+            background: hsl(var(--destructive) / 0.2);
+            color: hsl(var(--destructive));
+            border: 1px solid hsl(var(--destructive) / 0.3);
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .control-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+            transform: translateY(0);
+        }
+
+        .control-btn.primary {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+
+        .control-btn.primary:hover {
+            background: hsl(var(--primary) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn.success {
+            background: hsl(var(--success));
+            color: hsl(var(--primary-foreground));
+        }
+
+        .control-btn.success:hover {
+            background: hsl(var(--success) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn.warning {
+            background: hsl(var(--warning));
+            color: hsl(var(--primary-foreground));
+        }
+
+        .control-btn.warning:hover {
+            background: hsl(var(--warning) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow-y: auto;
+            animation: slideInRight 0.6s ease-out 0.4s both;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1rem;
+            color: hsl(var(--foreground));
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            background: hsl(var(--border));
+            border-radius: 6px;
+            height: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: hsl(var(--success));
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 6px;
+        }
+
+        .lost-time-display {
+            background: hsl(var(--destructive) / 0.1);
+            border: 1px solid hsl(var(--destructive) / 0.3);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .lost-time-label {
+            font-size: 0.9rem;
+            color: hsl(var(--destructive));
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .lost-time-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: hsl(var(--destructive));
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        }
+
+        /* Phase 4: Completion */
+        .completion-phase {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: scaleIn 0.6s ease-out;
+        }
+
+        .completion-header {
+            margin-bottom: 3rem;
+        }
+
+        .completion-header h2 {
+            font-size: 3rem;
+            color: hsl(var(--success));
+            margin-bottom: 1rem;
+        }
+
+        .completion-header p {
+            font-size: 1.3rem;
+            color: hsl(var(--text-muted));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: hsl(var(--muted-foreground));
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: hsl(var(--primary));
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        }
+
+        .stat-value.large {
+            font-size: 3rem;
+        }
+
+        .action-breakdown {
+            background: hsl(var(--surface));
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px hsl(var(--shadow) / 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .action-breakdown h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-action {
+            font-weight: 500;
+        }
+
+        .breakdown-time {
+            font-weight: 600;
+            color: hsl(var(--primary));
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+        }
+
+        .new-session-btn {
+            padding: 16px 32px;
+            background: hsl(var(--primary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .new-session-btn:hover {
+            background: hsl(var(--primary-dark));
+        }
+
+        /* Utility classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .phase-transition {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .active-phase {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .main-timer-section {
+                padding: 2rem 1rem;
+            }
+
+            .timer-display {
+                font-size: 3rem;
+            }
+
+            .current-action {
+                font-size: 1.4rem;
+            }
+
+            .action-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .control-btn {
+                min-width: auto;
+            }
+
+            .completion-header h2 {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .action-input-form {
+                flex-direction: column;
+            }
+
+            .timer-display {
+                font-size: 2.5rem;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .stat-value.large {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>APM Tracker</h1>
+            <p>Track your Actions Per Minute with precision timing</p>
+        </header>
+
+        <!-- Phase 1: Setup -->
+        <div id="setupPhase" class="setup-phase">
+            <div class="action-input-section">
+                <form class="action-input-form" id="actionForm">
+                    <input 
+                        type="text" 
+                        class="action-input" 
+                        id="actionInput" 
+                        placeholder="Enter an action to track..."
+                        maxlength="100"
+                        required
+                    >
+                    <button type="submit" class="add-action-btn">Add Action</button>
+                </form>
+
+                <div class="actions-list" id="actionsList">
+                    <div class="empty-state">
+                        <p>Add your first action to get started</p>
+                        <p><small>You can drag and drop to reorder actions</small></p>
+                    </div>
+                </div>
+
+                <button class="start-session-btn" id="startSessionBtn" disabled>
+                    Start Session
+                </button>
+            </div>
+        </div>
+
+        <!-- Phase 2: Active Session -->
+        <div id="activePhase" class="active-phase hidden">
+            <div class="main-timer-section">
+                <div class="current-action" id="currentAction">Loading...</div>
+                <div class="timer-display" id="timerDisplay">00:00</div>
+                <div class="timer-status active" id="timerStatus">Tracking Action Time</div>
+                
+                <div class="action-controls">
+                    <button class="control-btn success" id="markDoneBtn">Mark Done</button>
+                    <button class="control-btn warning" id="pauseBtn">Pause</button>
+                    <button class="control-btn primary hidden" id="resumeBtn">Resume</button>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h3>Session Progress</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+
+                <div class="lost-time-display">
+                    <div class="lost-time-label">Lost Time</div>
+                    <div class="lost-time-value" id="lostTimeDisplay">00:00</div>
+                </div>
+
+                <h3>Actions</h3>
+                <div id="sidebarActionsList"></div>
+            </div>
+        </div>
+
+        <!-- Phase 4: Completion -->
+        <div id="completionPhase" class="completion-phase hidden">
+            <div class="completion-header">
+                <h2>🎉 Session Complete!</h2>
+                <p>Congratulations on completing all your actions</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Session Time</div>
+                    <div class="stat-value" id="totalSessionTime">00:00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Lost Time</div>
+                    <div class="stat-value" id="finalLostTime">00:00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Actions Completed</div>
+                    <div class="stat-value" id="actionsCompleted">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Actions Per Minute</div>
+                    <div class="stat-value large" id="apmValue">0.0</div>
+                </div>
+            </div>
+
+            <div class="action-breakdown">
+                <h3>Action Breakdown</h3>
+                <div id="actionBreakdown"></div>
+            </div>
+
+            <button class="new-session-btn" id="newSessionBtn">Start New Session</button>
+        </div>
+    </div>
+
+    <script>
+        class APMTracker {
+            constructor() {
+                this.actions = [];
+                this.currentActionIndex = 0;
+                this.sessionStartTime = null;
+                this.currentActionStartTime = null;
+                this.isPaused = false;
+                this.lostTime = 0;
+                this.pauseStartTime = null;
+                this.timer = null;
+                
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.updateUI();
+            }
+
+            bindEvents() {
+                // Setup phase events
+                document.getElementById('actionForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addAction();
+                });
+
+                document.getElementById('startSessionBtn').addEventListener('click', () => {
+                    this.startSession();
+                });
+
+                // Active phase events
+                document.getElementById('markDoneBtn').addEventListener('click', () => {
+                    this.markActionDone();
+                });
+
+                document.getElementById('pauseBtn').addEventListener('click', () => {
+                    this.pauseAction();
+                });
+
+                document.getElementById('resumeBtn').addEventListener('click', () => {
+                    this.resumeAction();
+                });
+
+                // Completion phase events
+                document.getElementById('newSessionBtn').addEventListener('click', () => {
+                    this.resetSession();
+                });
+            }
+
+            addAction() {
+                const input = document.getElementById('actionInput');
+                const actionText = input.value.trim();
+                
+                if (actionText) {
+                    const action = {
+                        id: Date.now(),
+                        text: actionText,
+                        duration: 0,
+                        completed: false,
+                        startTime: null
+                    };
+                    
+                    this.actions.push(action);
+                    input.value = '';
+                    this.updateUI();
+                    this.renderActionsList();
+                }
+            }
+
+            removeAction(actionId) {
+                this.actions = this.actions.filter(action => action.id !== actionId);
+                this.updateUI();
+                this.renderActionsList();
+            }
+
+            reorderActions(draggedId, targetId) {
+                const draggedIndex = this.actions.findIndex(a => a.id === draggedId);
+                const targetIndex = this.actions.findIndex(a => a.id === targetId);
+                
+                if (draggedIndex !== -1 && targetIndex !== -1) {
+                    const [draggedAction] = this.actions.splice(draggedIndex, 1);
+                    this.actions.splice(targetIndex, 0, draggedAction);
+                    this.renderActionsList();
+                }
+            }
+
+            renderActionsList() {
+                const container = document.getElementById('actionsList');
+                
+                if (this.actions.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>Add your first action to get started</p>
+                            <p><small>You can drag and drop to reorder actions</small></p>
+                        </div>
+                    `;
+                    container.classList.remove('has-actions');
+                } else {
+                    container.classList.add('has-actions');
+                    container.innerHTML = this.actions.map(action => `
+                        <div class="action-item ${action.completed ? 'completed' : ''}" 
+                             data-id="${action.id}" 
+                             draggable="true">
+                            <span class="action-text">${action.text}</span>
+                            <div>
+                                ${action.duration > 0 ? `<span class="action-duration">${this.formatTime(action.duration)}</span>` : ''}
+                                <button class="remove-action" onclick="tracker.removeAction(${action.id})">×</button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Add drag and drop functionality
+                    this.setupDragAndDrop();
+                }
+            }
+
+            setupDragAndDrop() {
+                const items = document.querySelectorAll('.action-item');
+                
+                items.forEach(item => {
+                    item.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', item.dataset.id);
+                        item.classList.add('dragging');
+                    });
+
+                    item.addEventListener('dragend', () => {
+                        item.classList.remove('dragging');
+                        items.forEach(i => i.classList.remove('drag-over'));
+                    });
+
+                    item.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        item.classList.add('drag-over');
+                    });
+
+                    item.addEventListener('dragleave', () => {
+                        item.classList.remove('drag-over');
+                    });
+
+                    item.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        const draggedId = parseInt(e.dataTransfer.getData('text/plain'));
+                        const targetId = parseInt(item.dataset.id);
+                        
+                        if (draggedId !== targetId) {
+                            this.reorderActions(draggedId, targetId);
+                        }
+                        
+                        item.classList.remove('drag-over');
+                    });
+                });
+            }
+
+            startSession() {
+                if (this.actions.length === 0) return;
+                
+                this.sessionStartTime = Date.now();
+                this.currentActionIndex = 0;
+                this.currentActionStartTime = Date.now();
+                this.actions[0].startTime = this.currentActionStartTime;
+                
+                this.showPhase('activePhase');
+                this.startTimer();
+                this.updateActivePhaseUI();
+            }
+
+            startTimer() {
+                this.timer = setInterval(() => {
+                    this.updateTimerDisplay();
+                }, 1000);
+            }
+
+            updateTimerDisplay() {
+                const currentTime = Date.now();
+                const currentAction = this.actions[this.currentActionIndex];
+                
+                if (!this.isPaused && currentAction) {
+                    const actionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    document.getElementById('timerDisplay').textContent = this.formatTime(actionTime);
+                }
+                
+                // Update lost time display
+                let totalLostTime = this.lostTime;
+                if (this.isPaused && this.pauseStartTime) {
+                    totalLostTime += Math.floor((currentTime - this.pauseStartTime) / 1000);
+                }
+                document.getElementById('lostTimeDisplay').textContent = this.formatTime(totalLostTime);
+            }
+
+            markActionDone() {
+                const currentTime = Date.now();
+                const currentAction = this.actions[this.currentActionIndex];
+                
+                if (currentAction && !this.isPaused) {
+                    // Calculate and store action duration
+                    currentAction.duration = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    currentAction.completed = true;
+                    
+                    // Move to next action
+                    this.currentActionIndex++;
+                    
+                    if (this.currentActionIndex < this.actions.length) {
+                        // Start next action
+                        this.currentActionStartTime = currentTime;
+                        this.actions[this.currentActionIndex].startTime = currentTime;
+                        this.updateActivePhaseUI();
+                    } else {
+                        // Session complete
+                        this.completeSession();
+                    }
+                }
+            }
+
+            pauseAction() {
+                if (!this.isPaused) {
+                    this.isPaused = true;
+                    this.pauseStartTime = Date.now();
+                    
+                    document.getElementById('timerStatus').textContent = 'Tracking Lost Time';
+                    document.getElementById('timerStatus').className = 'timer-status lost-time';
+                    document.getElementById('pauseBtn').classList.add('hidden');
+                    document.getElementById('resumeBtn').classList.remove('hidden');
+                }
+            }
+
+            resumeAction() {
+                if (this.isPaused) {
+                    const currentTime = Date.now();
+                    const pauseDuration = currentTime - this.pauseStartTime;
+                    
+                    // Add to lost time
+                    this.lostTime += Math.floor(pauseDuration / 1000);
+                    
+                    // Adjust action start time to account for pause duration
+                    this.currentActionStartTime += pauseDuration;
+                    
+                    this.isPaused = false;
+                    this.pauseStartTime = null;
+                    
+                    document.getElementById('timerStatus').textContent = 'Tracking Action Time';
+                    document.getElementById('timerStatus').className = 'timer-status active';
+                    document.getElementById('pauseBtn').classList.remove('hidden');
+                    document.getElementById('resumeBtn').classList.add('hidden');
+                }
+            }
+
+            completeSession() {
+                clearInterval(this.timer);
+                this.timer = null;
+                
+                this.showPhase('completionPhase');
+                this.displayFinalStats();
+            }
+
+            displayFinalStats() {
+                const totalSessionTime = Math.floor((Date.now() - this.sessionStartTime) / 1000);
+                const completedActions = this.actions.filter(a => a.completed).length;
+                const apm = completedActions > 0 ? (completedActions / (totalSessionTime / 60)) : 0;
+                
+                document.getElementById('totalSessionTime').textContent = this.formatTime(totalSessionTime);
+                document.getElementById('finalLostTime').textContent = this.formatTime(this.lostTime);
+                document.getElementById('actionsCompleted').textContent = completedActions;
+                document.getElementById('apmValue').textContent = apm.toFixed(1);
+                
+                // Render action breakdown
+                const breakdown = document.getElementById('actionBreakdown');
+                breakdown.innerHTML = this.actions.map(action => `
+                    <div class="breakdown-item">
+                        <span class="breakdown-action">${action.text}</span>
+                        <span class="breakdown-time">${this.formatTime(action.duration)}</span>
+                    </div>
+                `).join('');
+            }
+
+            updateActivePhaseUI() {
+                const currentAction = this.actions[this.currentActionIndex];
+                
+                if (currentAction) {
+                    document.getElementById('currentAction').textContent = currentAction.text;
+                    
+                    // Reset timer display
+                    document.getElementById('timerDisplay').textContent = '00:00';
+                    
+                    // Update progress
+                    const progress = (this.currentActionIndex / this.actions.length) * 100;
+                    document.getElementById('progressFill').style.width = `${progress}%`;
+                }
+                
+                this.updateSidebarActions();
+            }
+
+            updateSidebarActions() {
+                const sidebar = document.getElementById('sidebarActionsList');
+                sidebar.innerHTML = this.actions.map((action, index) => {
+                    let statusClass = '';
+                    let statusText = '';
+                    
+                    if (action.completed) {
+                        statusClass = 'completed';
+                        statusText = this.formatTime(action.duration);
+                    } else if (index === this.currentActionIndex) {
+                        statusClass = 'active';
+                        statusText = 'Current';
+                    }
+                    
+                    return `
+                        <div class="action-item ${statusClass}">
+                            <span class="action-text">${action.text}</span>
+                            <span class="action-duration">${statusText}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            resetSession() {
+                // Clear timer
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+                
+                // Reset all state
+                this.actions = [];
+                this.currentActionIndex = 0;
+                this.sessionStartTime = null;
+                this.currentActionStartTime = null;
+                this.isPaused = false;
+                this.lostTime = 0;
+                this.pauseStartTime = null;
+                
+                // Reset UI
+                this.showPhase('setupPhase');
+                this.updateUI();
+                this.renderActionsList();
+                
+                // Reset controls to default state
+                document.getElementById('timerStatus').className = 'timer-status active';
+                document.getElementById('pauseBtn').classList.remove('hidden');
+                document.getElementById('resumeBtn').classList.add('hidden');
+            }
+
+            showPhase(phaseId) {
+                // Add fade out animation to current phase
+                const phases = ['setupPhase', 'activePhase', 'completionPhase'];
+                const currentPhase = phases.find(phase => !document.getElementById(phase).classList.contains('hidden'));
+                
+                if (currentPhase && currentPhase !== phaseId) {
+                    const currentElement = document.getElementById(currentPhase);
+                    currentElement.classList.add('phase-transition');
+                    
+                    setTimeout(() => {
+                        phases.forEach(phase => document.getElementById(phase).classList.add('hidden'));
+                        document.getElementById(phaseId).classList.remove('hidden');
+                        currentElement.classList.remove('phase-transition');
+                    }, 300);
+                } else {
+                    phases.forEach(phase => document.getElementById(phase).classList.add('hidden'));
+                    document.getElementById(phaseId).classList.remove('hidden');
+                }
+            }
+
+            updateUI() {
+                const hasActions = this.actions.length > 0;
+                document.getElementById('startSessionBtn').disabled = !hasActions;
+            }
+
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Initialize the tracker
+        const tracker = new APMTracker();
+    </script>
+</body>
+</html>
