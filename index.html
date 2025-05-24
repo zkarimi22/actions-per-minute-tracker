@@ -670,13 +670,37 @@
                 font-size: 2.5rem;
             }
         }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: auto; /* Pushes footer to the bottom of flex .container */
+            color: hsl(var(--muted-foreground));
+            font-size: 0.9rem;
+            border-top: 1px solid hsl(var(--border));
+        }
+
+        .footer p {
+            margin: 0; /* Reset paragraph margin */
+        }
+
+        .footer a {
+            color: hsl(var(--primary));
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>APM Tracker</h1>
-            <p>Track your Actions Per Minute with precision timing</p>
+            <h1>APM Tracker - Actions Per Minute</h1>
+            <p>Measure how fast you execute, increase your bias towards action & get more done.</p>
         </header>
 
         <!-- Phase 1: Setup -->
@@ -770,6 +794,10 @@
 
             <button class="new-session-btn" id="newSessionBtn">Start New Session</button>
         </div>
+
+        <footer class="footer">
+            <p>A project created by <a href="https://twitter.com/zedkay22" target="_blank" rel="noopener noreferrer">Zalmay Karimi</a></p>
+        </footer>
     </div>
 
     <script>
