@@ -478,6 +478,44 @@
             font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
         }
 
+        .current-action-notes {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .current-action-notes h3 {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: hsl(var(--foreground));
+        }
+
+        .active-notes-input {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            color: hsl(var(--foreground));
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .active-notes-input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        .active-notes-input::placeholder {
+            color: hsl(var(--muted-foreground));
+        }
+
         /* Phase 4: Completion */
         .completion-phase {
             text-align: center;
@@ -726,6 +764,10 @@
                 height: auto;
             }
 
+            .active-notes-input {
+                min-height: 80px;
+            }
+
             .main-timer-section {
                 padding: 2rem 1rem;
             }
@@ -871,6 +913,15 @@
                     <div class="lost-time-value" id="lostTimeDisplay">00:00</div>
                 </div>
 
+                <div class="current-action-notes">
+                    <h3>Notes</h3>
+                    <textarea 
+                        id="currentActionNotes" 
+                        class="active-notes-input"
+                        placeholder="Add notes about this action as you work..."
+                    ></textarea>
+                </div>
+
                 <h3>Actions</h3>
                 <div id="sidebarActionsList"></div>
             </div>
@@ -980,6 +1031,9 @@
                 document.getElementById('exportBtn').addEventListener('click', () => {
                     this.exportSessionData();
                 });
+
+                // Active session notes event listener (will be bound when session starts)
+                this.setupNotesListener();
             }
 
             addAction() {
@@ -1093,6 +1147,13 @@
                 this.currentActionIndex = 0;
                 this.currentActionStartTime = Date.now();
                 this.actions[0].startTime = this.currentActionStartTime;
+                
+                // Initialize notes property for all actions if not already present
+                this.actions.forEach(action => {
+                    if (!action.hasOwnProperty('notes')) {
+                        action.notes = '';
+                    }
+                });
                 
                 // Set initial tab title
                 document.title = `00:00 - ${this.actions[0].text} | APM Tracker`;
@@ -1322,6 +1383,18 @@
                 });
             }
 
+            setupNotesListener() {
+                // This will be called whenever the active phase is shown
+                document.addEventListener('input', (e) => {
+                    if (e.target.id === 'currentActionNotes') {
+                        const currentAction = this.actions[this.currentActionIndex];
+                        if (currentAction) {
+                            currentAction.notes = e.target.value;
+                        }
+                    }
+                });
+            }
+
             exportSessionData() {
                 const sessionData = {
                     sessionInfo: {
@@ -1371,6 +1444,12 @@
                     
                     // Hide skip button initially (will show after 10 seconds)
                     document.getElementById('skipBtn').classList.add('hidden');
+                    
+                    // Load existing notes for current action
+                    const notesInput = document.getElementById('currentActionNotes');
+                    if (notesInput) {
+                        notesInput.value = currentAction.notes || '';
+                    }
                     
                     // Update progress
                     const progress = (this.currentActionIndex / this.actions.length) * 100;
