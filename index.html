@@ -1094,6 +1094,9 @@
                 this.currentActionStartTime = Date.now();
                 this.actions[0].startTime = this.currentActionStartTime;
                 
+                // Set initial tab title
+                document.title = `00:00 - ${this.actions[0].text} | APM Tracker`;
+                
                 this.showPhase('activePhase');
                 this.startTimer();
                 this.updateActivePhaseUI();
@@ -1110,14 +1113,25 @@
                 const currentAction = this.actions[this.currentActionIndex];
                 
                 if (!this.isPaused && currentAction) {
-                    const actionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
-                    document.getElementById('timerDisplay').textContent = this.formatTime(actionTime);
+                    const currentSessionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    const totalActionTime = currentAction.duration + currentSessionTime;
+                    const formattedTime = this.formatTime(totalActionTime);
+                    document.getElementById('timerDisplay').textContent = formattedTime;
                     
-                    // Show skip button after 10 seconds
+                    // Update browser tab title with timer and action name
+                    document.title = `${formattedTime} - ${currentAction.text} | APM Tracker`;
+                    
+                    // Show skip button after 10 seconds of current session time (not total time)
                     const skipBtn = document.getElementById('skipBtn');
-                    if (actionTime >= 10 && skipBtn.classList.contains('hidden')) {
+                    if (currentSessionTime >= 10 && skipBtn.classList.contains('hidden')) {
                         skipBtn.classList.remove('hidden');
                     }
+                } else if (this.isPaused && currentAction) {
+                    // When paused, show paused status in tab title
+                    const currentSessionTime = Math.floor((Date.now() - this.currentActionStartTime) / 1000);
+                    const totalActionTime = currentAction.duration + currentSessionTime;
+                    const formattedTime = this.formatTime(totalActionTime);
+                    document.title = `⏸️ ${formattedTime} - ${currentAction.text} | APM Tracker`;
                 }
                 
                 // Update lost time display
@@ -1133,8 +1147,9 @@
                 const currentAction = this.actions[this.currentActionIndex];
                 
                 if (currentAction && !this.isPaused) {
-                    // Calculate and store action duration
-                    currentAction.duration = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    // Calculate and add to existing duration (in case this action was previously skipped)
+                    const sessionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    currentAction.duration += sessionTime;
                     currentAction.completed = true;
                     
                     // Move to next action
@@ -1248,6 +1263,9 @@
             completeSession() {
                 clearInterval(this.timer);
                 this.timer = null;
+                
+                // Reset tab title
+                document.title = '🎉 Session Complete! | APM Tracker';
                 
                 this.showPhase('completionPhase');
                 this.displayFinalStats();
@@ -1400,6 +1418,9 @@
                 this.isPaused = false;
                 this.lostTime = 0;
                 this.pauseStartTime = null;
+                
+                // Reset tab title
+                document.title = 'APM Tracker - Actions Per Minute';
                 
                 // Reset UI
                 this.showPhase('setupPhase');
