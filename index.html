@@ -1211,18 +1211,35 @@
                     // Remove current action from current position
                     const skippedAction = this.actions.splice(this.currentActionIndex, 1)[0];
                     
-                    // Insert it at the next position (or at the end if it's the last action)
-                    const insertIndex = this.currentActionIndex < this.actions.length ? this.currentActionIndex : this.actions.length;
+                    // Insert it as the next action to be done
+                    // If there are more actions after current position, insert it right after current
+                    // If this was the last action, insert it at the end
+                    const insertIndex = this.currentActionIndex < this.actions.length ? this.currentActionIndex + 1 : this.actions.length;
                     this.actions.splice(insertIndex, 0, skippedAction);
                     
-                    // Check if there are more actions to process
-                    if (this.currentActionIndex < this.actions.length) {
-                        // Start next action
+                    // Find next uncompleted action
+                    let nextActionIndex = this.currentActionIndex;
+                    while (nextActionIndex < this.actions.length && this.actions[nextActionIndex].completed) {
+                        nextActionIndex++;
+                    }
+                    
+                    // If no uncompleted actions found from current position, check from beginning
+                    if (nextActionIndex >= this.actions.length) {
+                        nextActionIndex = 0;
+                        while (nextActionIndex < this.actions.length && this.actions[nextActionIndex].completed) {
+                            nextActionIndex++;
+                        }
+                    }
+                    
+                    // Check if we found an uncompleted action
+                    if (nextActionIndex < this.actions.length) {
+                        // Start the next uncompleted action
+                        this.currentActionIndex = nextActionIndex;
                         this.currentActionStartTime = currentTime;
                         this.actions[this.currentActionIndex].startTime = currentTime;
                         this.updateActivePhaseUI();
                     } else {
-                        // No more actions, complete session
+                        // All actions are completed, finish session
                         this.completeSession();
                     }
                 }
