@@ -572,20 +572,123 @@
             font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
         }
 
-        .new-session-btn {
+        .retrospective-section {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 3rem;
+        }
+
+        .retrospective-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            color: hsl(var(--foreground));
+        }
+
+        .retrospective-section p {
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 2rem;
+        }
+
+        .retrospective-item {
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .retrospective-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .retrospective-action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .retrospective-action-name {
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+
+        .retrospective-action-time {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+            color: hsl(var(--primary));
+            font-weight: 600;
+        }
+
+        .retrospective-notes {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px 16px;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            font-size: 1rem;
+            color: hsl(var(--foreground));
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .retrospective-notes:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        .retrospective-notes::placeholder {
+            color: hsl(var(--muted-foreground));
+        }
+
+        .export-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .export-btn {
             padding: 16px 32px;
-            background: hsl(var(--primary));
-            color: white;
+            background: hsl(var(--success));
+            color: hsl(var(--primary-foreground));
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius);
             font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s ease;
+            transform: translateY(0);
+        }
+
+        .export-btn:hover {
+            background: hsl(var(--success) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .new-session-btn {
+            padding: 16px 32px;
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: translateY(0);
         }
 
         .new-session-btn:hover {
-            background: hsl(var(--primary-dark));
+            background: hsl(var(--primary) / 0.9);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         /* Utility classes */
@@ -636,7 +739,9 @@
             }
 
             .action-controls {
-                flex-direction: column;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
                 align-items: stretch;
             }
 
@@ -650,6 +755,15 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .export-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .export-btn, .new-session-btn {
+                width: 100%;
             }
         }
 
@@ -742,6 +856,7 @@
                     <button class="control-btn success" id="markDoneBtn">Mark Done</button>
                     <button class="control-btn warning" id="pauseBtn">Pause</button>
                     <button class="control-btn primary hidden" id="resumeBtn">Resume</button>
+                    <button class="control-btn primary hidden" id="skipBtn">Skip</button>
                 </div>
             </div>
 
@@ -792,7 +907,16 @@
                 <div id="actionBreakdown"></div>
             </div>
 
-            <button class="new-session-btn" id="newSessionBtn">Start New Session</button>
+            <div class="retrospective-section">
+                <h3>Session Retrospective</h3>
+                <p>Add notes about your experience with each action:</p>
+                <div id="retrospectiveItems"></div>
+            </div>
+
+            <div class="export-section">
+                <button class="export-btn" id="exportBtn">Export to JSON</button>
+                <button class="new-session-btn" id="newSessionBtn">Start New Session</button>
+            </div>
         </div>
 
         <footer class="footer">
@@ -844,9 +968,17 @@
                     this.resumeAction();
                 });
 
+                document.getElementById('skipBtn').addEventListener('click', () => {
+                    this.skipAction();
+                });
+
                 // Completion phase events
                 document.getElementById('newSessionBtn').addEventListener('click', () => {
                     this.resetSession();
+                });
+
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportSessionData();
                 });
             }
 
@@ -980,6 +1112,12 @@
                 if (!this.isPaused && currentAction) {
                     const actionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
                     document.getElementById('timerDisplay').textContent = this.formatTime(actionTime);
+                    
+                    // Show skip button after 10 seconds
+                    const skipBtn = document.getElementById('skipBtn');
+                    if (actionTime >= 10 && skipBtn.classList.contains('hidden')) {
+                        skipBtn.classList.remove('hidden');
+                    }
                 }
                 
                 // Update lost time display
@@ -1023,6 +1161,7 @@
                     document.getElementById('timerStatus').className = 'timer-status lost-time';
                     document.getElementById('pauseBtn').classList.add('hidden');
                     document.getElementById('resumeBtn').classList.remove('hidden');
+                    document.getElementById('skipBtn').classList.add('hidden');
                 }
             }
 
@@ -1044,6 +1183,48 @@
                     document.getElementById('timerStatus').className = 'timer-status active';
                     document.getElementById('pauseBtn').classList.remove('hidden');
                     document.getElementById('resumeBtn').classList.add('hidden');
+                    
+                    // Only show skip button if more than 10 seconds have passed
+                    const currentAction = this.actions[this.currentActionIndex];
+                    if (currentAction) {
+                        const actionTime = Math.floor((Date.now() - this.currentActionStartTime) / 1000);
+                        if (actionTime >= 10) {
+                            document.getElementById('skipBtn').classList.remove('hidden');
+                        } else {
+                            document.getElementById('skipBtn').classList.add('hidden');
+                        }
+                    }
+                }
+            }
+
+            skipAction() {
+                if (this.isPaused || this.currentActionIndex >= this.actions.length) return;
+                
+                const currentTime = Date.now();
+                const currentAction = this.actions[this.currentActionIndex];
+                
+                if (currentAction) {
+                    // Calculate and add to existing duration
+                    const sessionTime = Math.floor((currentTime - this.currentActionStartTime) / 1000);
+                    currentAction.duration += sessionTime;
+                    
+                    // Remove current action from current position
+                    const skippedAction = this.actions.splice(this.currentActionIndex, 1)[0];
+                    
+                    // Insert it at the next position (or at the end if it's the last action)
+                    const insertIndex = this.currentActionIndex < this.actions.length ? this.currentActionIndex : this.actions.length;
+                    this.actions.splice(insertIndex, 0, skippedAction);
+                    
+                    // Check if there are more actions to process
+                    if (this.currentActionIndex < this.actions.length) {
+                        // Start next action
+                        this.currentActionStartTime = currentTime;
+                        this.actions[this.currentActionIndex].startTime = currentTime;
+                        this.updateActivePhaseUI();
+                    } else {
+                        // No more actions, complete session
+                        this.completeSession();
+                    }
                 }
             }
 
@@ -1073,6 +1254,75 @@
                         <span class="breakdown-time">${this.formatTime(action.duration)}</span>
                     </div>
                 `).join('');
+
+                // Render retrospective section
+                this.renderRetrospective();
+            }
+
+            renderRetrospective() {
+                const retrospectiveContainer = document.getElementById('retrospectiveItems');
+                retrospectiveContainer.innerHTML = this.actions.map((action, index) => `
+                    <div class="retrospective-item">
+                        <div class="retrospective-action-header">
+                            <span class="retrospective-action-name">${action.text}</span>
+                            <span class="retrospective-action-time">${this.formatTime(action.duration)}</span>
+                        </div>
+                        <textarea 
+                            class="retrospective-notes" 
+                            placeholder="Add your thoughts, challenges, or insights about this action..."
+                            data-action-id="${action.id}"
+                        >${action.notes || ''}</textarea>
+                    </div>
+                `).join('');
+
+                // Add event listeners for note updates
+                retrospectiveContainer.querySelectorAll('.retrospective-notes').forEach(textarea => {
+                    textarea.addEventListener('input', (e) => {
+                        const actionId = parseInt(e.target.dataset.actionId);
+                        const action = this.actions.find(a => a.id === actionId);
+                        if (action) {
+                            action.notes = e.target.value;
+                        }
+                    });
+                });
+            }
+
+            exportSessionData() {
+                const sessionData = {
+                    sessionInfo: {
+                        startTime: new Date(this.sessionStartTime).toISOString(),
+                        endTime: new Date().toISOString(),
+                        totalDuration: Math.floor((Date.now() - this.sessionStartTime) / 1000),
+                        lostTime: this.lostTime,
+                        actionsCompleted: this.actions.filter(a => a.completed).length,
+                        totalActions: this.actions.length,
+                        actionsPerMinute: this.actions.filter(a => a.completed).length > 0 ? 
+                            (this.actions.filter(a => a.completed).length / (Math.floor((Date.now() - this.sessionStartTime) / 1000) / 60)) : 0
+                    },
+                    actions: this.actions.map(action => ({
+                        id: action.id,
+                        text: action.text,
+                        duration: action.duration,
+                        completed: action.completed,
+                        notes: action.notes || '',
+                        startTime: action.startTime ? new Date(action.startTime).toISOString() : null
+                    }))
+                };
+
+                // Create and download JSON file
+                const dataStr = JSON.stringify(sessionData, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `apm-session-${new Date().toISOString().split('T')[0]}-${Date.now()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Clean up the URL object
+                URL.revokeObjectURL(url);
             }
 
             updateActivePhaseUI() {
@@ -1083,6 +1333,9 @@
                     
                     // Reset timer display
                     document.getElementById('timerDisplay').textContent = '00:00';
+                    
+                    // Hide skip button initially (will show after 10 seconds)
+                    document.getElementById('skipBtn').classList.add('hidden');
                     
                     // Update progress
                     const progress = (this.currentActionIndex / this.actions.length) * 100;
@@ -1140,6 +1393,7 @@
                 document.getElementById('timerStatus').className = 'timer-status active';
                 document.getElementById('pauseBtn').classList.remove('hidden');
                 document.getElementById('resumeBtn').classList.add('hidden');
+                document.getElementById('skipBtn').classList.add('hidden');
             }
 
             showPhase(phaseId) {
