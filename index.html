@@ -54,22 +54,83 @@
             flex-direction: column;
         }
 
+        .header-meta {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 0.35rem;
+        }
+
+        .creator-credit {
+            font-size: 0.78rem;
+            font-weight: 300;
+            color: hsl(var(--muted-foreground));
+            text-decoration: none;
+        }
+
+        .creator-credit:hover {
+            color: hsl(var(--foreground));
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .topbar-btn {
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            color: hsl(var(--foreground));
+            font-size: 0.8rem;
+            font-weight: 300;
+            cursor: pointer;
+            line-height: 1.2;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.22rem;
+            text-decoration-color: hsl(var(--foreground) / 0.55);
+            transition: color 0.2s ease, text-decoration-color 0.2s ease;
+        }
+
+        .topbar-btn:hover {
+            color: hsl(var(--foreground));
+            text-decoration-color: hsl(var(--foreground));
+        }
+
+        .topbar-btn.destructive {
+            color: hsl(var(--foreground));
+            text-decoration-color: hsl(var(--destructive));
+        }
+
+        .topbar-btn.destructive:hover {
+            color: hsl(var(--destructive));
+        }
+
         .header {
             text-align: center;
             margin-bottom: 2rem;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 1.2rem;
+            font-weight: 300;
             color: hsl(var(--primary));
             margin-bottom: 0.5rem;
             animation: fadeInUp 0.6s ease-out;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.24rem;
+            text-decoration-color: hsl(var(--primary) / 0.45);
         }
 
         .header p {
             color: hsl(var(--muted-foreground));
-            font-size: 1.1rem;
+            font-size: 0.92rem;
+            font-weight: 300;
             animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
@@ -559,6 +620,388 @@
             animation: scaleIn 0.6s ease-out;
         }
 
+        .sessions-phase {
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .sessions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sessions-header h2 {
+            font-size: 1.15rem;
+            font-weight: 300;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.24rem;
+            text-decoration-color: hsl(var(--foreground) / 0.45);
+        }
+
+        .back-btn {
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: hsl(var(--foreground));
+            font-size: 0.84rem;
+            font-weight: 300;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.22rem;
+            text-decoration-color: hsl(var(--foreground) / 0.55);
+        }
+
+        .sessions-empty,
+        .session-card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .sessions-empty {
+            padding: 2rem;
+            text-align: center;
+            color: hsl(var(--muted-foreground));
+        }
+
+        .sessions-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .session-card {
+            padding: 1.5rem;
+        }
+
+        .session-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .session-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .session-card-subtitle {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.95rem;
+        }
+
+        .session-status {
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .session-status.completed {
+            background: hsl(var(--success) / 0.2);
+            color: hsl(var(--success));
+        }
+
+        .session-status.in-progress {
+            background: hsl(var(--warning) / 0.2);
+            color: hsl(var(--warning));
+        }
+
+        .session-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .session-meta-item {
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 0.75rem;
+        }
+
+        .session-meta-label {
+            font-size: 0.8rem;
+            color: hsl(var(--muted-foreground));
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.25rem;
+        }
+
+        .session-meta-value {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .session-actions-list {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .session-action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            background: hsl(var(--background));
+        }
+
+        .session-action-row strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .session-action-row p {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.92rem;
+        }
+
+        .session-card-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .journal-phase {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .journal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .journal-header h2 {
+            font-size: 1.15rem;
+            font-weight: 300;
+            margin-bottom: 0.35rem;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.24rem;
+            text-decoration-color: hsl(var(--foreground) / 0.45);
+        }
+
+        .journal-header p {
+            color: hsl(var(--muted-foreground));
+            font-size: 0.92rem;
+            font-weight: 300;
+        }
+
+        .journal-primary-btn {
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: hsl(var(--foreground));
+            font-size: 0.92rem;
+            font-weight: 300;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.22rem;
+        }
+
+        .journal-panel {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+        }
+
+        .journal-panel h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .journal-panel p {
+            color: hsl(var(--muted-foreground));
+            margin-bottom: 1.25rem;
+        }
+
+        .journal-card-list {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .journal-card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 1rem 1.1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        .journal-card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+            margin-bottom: 0.55rem;
+        }
+
+        .journal-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .journal-card-time {
+            font-size: 0.8rem;
+            font-weight: 300;
+            color: hsl(var(--muted-foreground));
+            white-space: nowrap;
+        }
+
+        .journal-card p {
+            color: hsl(var(--muted-foreground));
+            margin: 0;
+        }
+
+        .journal-card-meta {
+            display: grid;
+            gap: 0.35rem;
+            margin-top: 0.75rem;
+            font-size: 0.92rem;
+        }
+
+        .journal-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 20;
+        }
+
+        .journal-modal.hidden {
+            display: none !important;
+        }
+
+        .journal-modal-content {
+            width: min(760px, 100%);
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+            padding: 1.25rem;
+        }
+
+        .journal-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .journal-modal-header h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .journal-modal-header p {
+            color: hsl(var(--muted-foreground));
+        }
+
+        .journal-close-btn {
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: hsl(var(--muted-foreground));
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        .journal-form {
+            display: grid;
+            gap: 0.9rem;
+        }
+
+        .journal-field {
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .journal-field label {
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .journal-field input,
+        .journal-field textarea {
+            width: 100%;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            font: inherit;
+        }
+
+        .journal-field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .journal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .journal-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .journal-action-btn {
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: hsl(var(--foreground));
+            font-size: 0.92rem;
+            font-weight: 300;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.22rem;
+        }
+
+        .journal-empty {
+            color: hsl(var(--muted-foreground));
+            text-align: center;
+            padding: 2.5rem 1rem;
+            border: 1px dashed hsl(var(--border));
+            border-radius: var(--radius);
+        }
+
         .completion-header {
             margin-bottom: 3rem;
         }
@@ -802,7 +1245,22 @@
             }
 
             .header h1 {
-                font-size: 2rem;
+                font-size: 1.05rem;
+            }
+
+            .journal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .journal-header,
+            .journal-card-top,
+            .journal-modal-header {
+                flex-direction: column;
+            }
+
+            .journal-modal-actions {
+                justify-content: flex-start;
+                flex-wrap: wrap;
             }
 
             .active-phase {
@@ -910,6 +1368,15 @@
 <body>
     <div class="container">
         <header class="header">
+            <div class="header-meta">
+                <a class="creator-credit" href="https://x.com/zalmaytech" target="_blank" rel="noopener noreferrer">A project by Zalmay Karimi</a>
+            </div>
+            <div class="topbar">
+                <button class="topbar-btn" id="decisionJournalBtn">Decision Journal</button>
+                <button class="topbar-btn" id="viewSessionsBtn">View Sessions</button>
+                <button class="topbar-btn" id="downloadDataBtn">Download Data</button>
+                <button class="topbar-btn destructive" id="clearDataBtn">Clear Data</button>
+            </div>
             <h1>APM Tracker - Actions Per Minute</h1>
             <p>Measure how fast you execute, increase your bias towards action & get more done.</p>
         </header>
@@ -1029,19 +1496,115 @@
             </div>
 
             <div class="export-section">
-                <button class="export-btn" id="exportBtn">Export to JSON</button>
+                <button class="export-btn" id="exportBtn">Download Session MD</button>
                 <button class="new-session-btn" id="newSessionBtn">Start New Session</button>
             </div>
         </div>
 
+        <div id="sessionsPhase" class="sessions-phase hidden">
+            <div class="sessions-header">
+                <div>
+                    <h2>Saved Sessions</h2>
+                    <p>Review recent sessions stored locally in your browser.</p>
+                </div>
+                <button class="back-btn" id="backToTrackerBtn">Back to Tracker</button>
+            </div>
+            <div id="sessionsList"></div>
+        </div>
+
+        <div id="journalPhase" class="journal-phase hidden">
+            <div class="journal-header">
+                <div>
+                    <h2>Decision Journal</h2>
+                    <p>Write down what you think before your brain edits the story later.</p>
+                </div>
+                <div>
+                    <button class="journal-primary-btn" id="makeDecisionBtn">Make a Decision</button>
+                    <button class="back-btn" id="backFromJournalBtn">Back to Tracker</button>
+                </div>
+            </div>
+            <div id="decisionJournalList"></div>
+        </div>
+
+        <div id="decisionModal" class="journal-modal hidden" aria-hidden="true">
+            <div class="journal-modal-content" role="dialog" aria-modal="true" aria-labelledby="decisionModalTitle">
+                <div class="journal-modal-header">
+                    <div>
+                        <h3 id="decisionModalTitle">Make a Decision</h3>
+                        <p>Capture your thinking now, before hindsight edits the memory.</p>
+                    </div>
+                    <button class="journal-close-btn" id="closeDecisionModalBtn" aria-label="Close decision form">×</button>
+                </div>
+
+                <form class="journal-form" id="decisionJournalForm">
+                    <div class="journal-field">
+                        <label for="journalTitle">Decision title</label>
+                        <input id="journalTitle" type="text" maxlength="140" placeholder="Hire a contractor, delay launch, take the offer..." required>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalProblem">Problem statement or frame</label>
+                        <textarea id="journalProblem" placeholder="What decision are you actually making?"></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalContext">Situation or context</label>
+                        <textarea id="journalContext" placeholder="What is happening right now?"></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalVariables">Variables and constraints</label>
+                        <textarea id="journalVariables" placeholder="Money, time, leverage, people, timing, incentives..."></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalAlternatives">Alternatives seriously considered</label>
+                        <textarea id="journalAlternatives" placeholder="What else did you seriously consider and why not choose it?"></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalOutcomeRange">Range of outcomes</label>
+                        <textarea id="journalOutcomeRange" placeholder="Best case, base case, worst case."></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalExpectations">Expected outcome and probabilities</label>
+                        <textarea id="journalExpectations" placeholder="What do you think will happen, and with what confidence?"></textarea>
+                    </div>
+                    <div class="journal-grid">
+                        <div class="journal-field">
+                            <label for="journalTimeOfDay">Time of day</label>
+                            <input id="journalTimeOfDay" type="text" maxlength="80" placeholder="9:30 AM">
+                        </div>
+                        <div class="journal-field">
+                            <label for="journalState">How you feel physically and mentally</label>
+                            <input id="journalState" type="text" maxlength="160" placeholder="Calm, tired, rushed, clear...">
+                        </div>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalWorstCase">Worst-case scenario</label>
+                        <textarea id="journalWorstCase" placeholder="What is the real downside if this goes poorly?"></textarea>
+                    </div>
+                    <div class="journal-field">
+                        <label for="journalOpportunityCost">Opportunity cost</label>
+                        <textarea id="journalOpportunityCost" placeholder="What are you not doing by choosing this?"></textarea>
+                    </div>
+                    <div class="journal-modal-actions">
+                        <button type="button" class="journal-action-btn" id="cancelDecisionBtn">Cancel</button>
+                        <button type="submit" class="journal-action-btn">Save Decision</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <footer class="footer">
-            <p>A project created by <a href="https://twitter.com/zedkay22" target="_blank" rel="noopener noreferrer">Zalmay Karimi</a></p>
+            <p>Everything stays local in your browser.</p>
         </footer>
     </div>
 
     <script>
         class APMTracker {
             constructor() {
+                this.storageKey = 'apm-tracker-sessions-v1';
+                this.activeSessionKey = 'apm-tracker-active-session-v1';
+                this.decisionJournalKey = 'apm-tracker-decision-journal-v1';
+                this.savedSessions = [];
+                this.decisionEntries = [];
+                this.currentSessionId = null;
                 this.actions = [];
                 this.currentActionIndex = 0;
                 this.sessionStartTime = null;
@@ -1055,11 +1618,21 @@
             }
 
             init() {
+                this.loadSavedSessions();
+                this.loadDecisionEntries();
                 this.bindEvents();
+                this.restoreActiveSession();
                 this.updateUI();
+                this.renderSessionsView();
+                this.renderDecisionJournal();
+                this.renderActionsList();
             }
 
             bindEvents() {
+                window.addEventListener('beforeunload', () => {
+                    this.persistCurrentSession();
+                });
+
                 // Setup phase events
                 document.getElementById('actionForm').addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -1093,7 +1666,56 @@
                 });
 
                 document.getElementById('exportBtn').addEventListener('click', () => {
-                    this.exportSessionData();
+                    this.downloadSingleSessionMarkdown();
+                });
+
+                document.getElementById('viewSessionsBtn').addEventListener('click', () => {
+                    this.renderSessionsView();
+                    this.showPhase('sessionsPhase');
+                });
+
+                document.getElementById('decisionJournalBtn').addEventListener('click', () => {
+                    this.renderDecisionJournal();
+                    this.showPhase('journalPhase');
+                });
+
+                document.getElementById('makeDecisionBtn').addEventListener('click', () => {
+                    this.openDecisionModal();
+                });
+
+                document.getElementById('downloadDataBtn').addEventListener('click', () => {
+                    this.downloadAllDataMarkdown();
+                });
+
+                document.getElementById('clearDataBtn').addEventListener('click', () => {
+                    this.clearAllData();
+                });
+
+                document.getElementById('backToTrackerBtn').addEventListener('click', () => {
+                    this.showTrackerPhase();
+                });
+
+                document.getElementById('backFromJournalBtn').addEventListener('click', () => {
+                    this.showTrackerPhase();
+                });
+
+                document.getElementById('decisionJournalForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.saveDecisionEntry();
+                });
+
+                document.getElementById('cancelDecisionBtn').addEventListener('click', () => {
+                    this.closeDecisionModal();
+                });
+
+                document.getElementById('closeDecisionModalBtn').addEventListener('click', () => {
+                    this.closeDecisionModal();
+                });
+
+                document.getElementById('decisionModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'decisionModal') {
+                        this.closeDecisionModal();
+                    }
                 });
 
                 // Active session notes event listener (will be bound when session starts)
@@ -1117,6 +1739,7 @@
                     input.value = '';
                     this.updateUI();
                     this.renderActionsList();
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1124,6 +1747,12 @@
                 this.actions = this.actions.filter(action => action.id !== actionId);
                 this.updateUI();
                 this.renderActionsList();
+                if (this.actions.length === 0 && !this.sessionStartTime) {
+                    this.currentSessionId = null;
+                    localStorage.removeItem(this.activeSessionKey);
+                    return;
+                }
+                this.persistCurrentSession();
             }
 
             reorderActions(draggedId, targetId) {
@@ -1134,6 +1763,7 @@
                     const [draggedAction] = this.actions.splice(draggedIndex, 1);
                     this.actions.splice(targetIndex, 0, draggedAction);
                     this.renderActionsList();
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1207,7 +1837,11 @@
             startSession() {
                 if (this.actions.length === 0) return;
                 
-                this.sessionStartTime = Date.now();
+                if (!this.currentSessionId) {
+                    this.currentSessionId = `session-${Date.now()}`;
+                }
+
+                this.sessionStartTime = this.sessionStartTime || Date.now();
                 this.currentActionIndex = 0;
                 this.currentActionStartTime = Date.now();
                 this.actions[0].startTime = this.currentActionStartTime;
@@ -1225,9 +1859,13 @@
                 this.showPhase('activePhase');
                 this.startTimer();
                 this.updateActivePhaseUI();
+                this.persistCurrentSession();
             }
 
             startTimer() {
+                if (this.timer) {
+                    clearInterval(this.timer);
+                }
                 this.timer = setInterval(() => {
                     this.updateTimerDisplay();
                 }, 1000);
@@ -1265,6 +1903,10 @@
                     totalLostTime += Math.floor((currentTime - this.pauseStartTime) / 1000);
                 }
                 document.getElementById('lostTimeDisplay').textContent = this.formatTime(totalLostTime);
+
+                if (this.sessionStartTime) {
+                    this.persistCurrentSession();
+                }
             }
 
             markActionDone() {
@@ -1289,6 +1931,8 @@
                         // Session complete
                         this.completeSession();
                     }
+
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1302,6 +1946,7 @@
                     document.getElementById('pauseBtn').classList.add('hidden');
                     document.getElementById('resumeBtn').classList.remove('hidden');
                     document.getElementById('skipBtn').classList.add('hidden');
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1334,6 +1979,8 @@
                             document.getElementById('skipBtn').classList.add('hidden');
                         }
                     }
+
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1382,6 +2029,8 @@
                         // All actions are completed, finish session
                         this.completeSession();
                     }
+
+                    this.persistCurrentSession();
                 }
             }
 
@@ -1391,6 +2040,8 @@
                 
                 // Reset tab title
                 document.title = '🎉 Session Complete! | APM Tracker';
+
+                this.finalizeCurrentSession();
                 
                 this.showPhase('completionPhase');
                 this.displayFinalStats();
@@ -1442,6 +2093,7 @@
                         const action = this.actions.find(a => a.id === actionId);
                         if (action) {
                             action.notes = e.target.value;
+                            this.persistCurrentSession();
                         }
                     });
                 });
@@ -1464,47 +2116,11 @@
                             } else if (e.target.id === 'currentActionNotesMain' && sidebarNotes) {
                                 sidebarNotes.value = e.target.value;
                             }
+
+                            this.persistCurrentSession();
                         }
                     }
                 });
-            }
-
-            exportSessionData() {
-                const sessionData = {
-                    sessionInfo: {
-                        startTime: new Date(this.sessionStartTime).toISOString(),
-                        endTime: new Date().toISOString(),
-                        totalDuration: Math.floor((Date.now() - this.sessionStartTime) / 1000),
-                        lostTime: this.lostTime,
-                        actionsCompleted: this.actions.filter(a => a.completed).length,
-                        totalActions: this.actions.length,
-                        actionsPerMinute: this.actions.filter(a => a.completed).length > 0 ? 
-                            (this.actions.filter(a => a.completed).length / (Math.floor((Date.now() - this.sessionStartTime) / 1000) / 60)) : 0
-                    },
-                    actions: this.actions.map(action => ({
-                        id: action.id,
-                        text: action.text,
-                        duration: action.duration,
-                        completed: action.completed,
-                        notes: action.notes || '',
-                        startTime: action.startTime ? new Date(action.startTime).toISOString() : null
-                    }))
-                };
-
-                // Create and download JSON file
-                const dataStr = JSON.stringify(sessionData, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `apm-session-${new Date().toISOString().split('T')[0]}-${Date.now()}.json`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // Clean up the URL object
-                URL.revokeObjectURL(url);
             }
 
             updateActivePhaseUI() {
@@ -1571,12 +2187,14 @@
                 
                 // Reset all state
                 this.actions = [];
+                this.currentSessionId = null;
                 this.currentActionIndex = 0;
                 this.sessionStartTime = null;
                 this.currentActionStartTime = null;
                 this.isPaused = false;
                 this.lostTime = 0;
                 this.pauseStartTime = null;
+                localStorage.removeItem(this.activeSessionKey);
                 
                 // Reset tab title
                 document.title = 'APM Tracker - Actions Per Minute';
@@ -1595,7 +2213,7 @@
 
             showPhase(phaseId) {
                 // Add fade out animation to current phase
-                const phases = ['setupPhase', 'activePhase', 'completionPhase'];
+                const phases = ['setupPhase', 'activePhase', 'completionPhase', 'sessionsPhase', 'journalPhase'];
                 const currentPhase = phases.find(phase => !document.getElementById(phase).classList.contains('hidden'));
                 
                 if (currentPhase && currentPhase !== phaseId) {
@@ -1616,6 +2234,497 @@
             updateUI() {
                 const hasActions = this.actions.length > 0;
                 document.getElementById('startSessionBtn').disabled = !hasActions;
+            }
+
+            loadSavedSessions() {
+                try {
+                    this.savedSessions = JSON.parse(localStorage.getItem(this.storageKey)) || [];
+                } catch (error) {
+                    this.savedSessions = [];
+                }
+            }
+
+            loadDecisionEntries() {
+                try {
+                    this.decisionEntries = JSON.parse(localStorage.getItem(this.decisionJournalKey)) || [];
+                } catch (error) {
+                    this.decisionEntries = [];
+                }
+            }
+
+            saveSavedSessions() {
+                localStorage.setItem(this.storageKey, JSON.stringify(this.savedSessions));
+                this.renderSessionsView();
+            }
+
+            saveDecisionEntries() {
+                localStorage.setItem(this.decisionJournalKey, JSON.stringify(this.decisionEntries));
+                this.renderDecisionJournal();
+            }
+
+            restoreActiveSession() {
+                try {
+                    const raw = localStorage.getItem(this.activeSessionKey);
+                    if (!raw) return;
+
+                    const activeSession = JSON.parse(raw);
+                    if (!activeSession || !activeSession.actions || !activeSession.actions.length) return;
+
+                    this.hydrateFromSession(activeSession);
+                    if (!activeSession.sessionStartTime) {
+                        this.showPhase('setupPhase');
+                        return;
+                    }
+
+                    if (activeSession.status === 'in-progress') {
+                        this.showPhase('activePhase');
+                        this.startTimer();
+                        this.updateActivePhaseUI();
+                    } else {
+                        this.showPhase('completionPhase');
+                        this.displayFinalStats();
+                    }
+                } catch (error) {
+                    localStorage.removeItem(this.activeSessionKey);
+                }
+            }
+
+            hydrateFromSession(session) {
+                this.currentSessionId = session.id;
+                this.actions = (session.actions || []).map(action => ({
+                    ...action,
+                    notes: action.notes || ''
+                }));
+                this.currentActionIndex = session.currentActionIndex || 0;
+                this.sessionStartTime = session.sessionStartTime || null;
+                this.currentActionStartTime = session.currentActionStartTime || null;
+                this.isPaused = Boolean(session.isPaused);
+                this.lostTime = session.lostTime || 0;
+                this.pauseStartTime = session.pauseStartTime || null;
+
+                if (this.isPaused) {
+                    document.getElementById('timerStatus').textContent = 'Tracking Lost Time';
+                    document.getElementById('timerStatus').className = 'timer-status lost-time';
+                    document.getElementById('pauseBtn').classList.add('hidden');
+                    document.getElementById('resumeBtn').classList.remove('hidden');
+                }
+            }
+
+            buildSessionRecord(statusOverride) {
+                const now = Date.now();
+                const status = statusOverride || (!this.sessionStartTime
+                    ? 'draft'
+                    : (this.actions.length > 0 && this.actions.every(action => action.completed) ? 'completed' : 'in-progress'));
+                const endTime = status === 'completed' ? now : null;
+                const totalDuration = this.sessionStartTime ? Math.floor((now - this.sessionStartTime) / 1000) : 0;
+                const completedActions = this.actions.filter(action => action.completed).length;
+                const totalActions = this.actions.length;
+                const apm = totalDuration > 0 ? completedActions / (totalDuration / 60) : 0;
+
+                return {
+                    id: this.currentSessionId || `session-${now}`,
+                    status,
+                    sessionStartTime: this.sessionStartTime,
+                    currentActionStartTime: this.currentActionStartTime,
+                    currentActionIndex: this.currentActionIndex,
+                    isPaused: this.isPaused,
+                    pauseStartTime: this.pauseStartTime,
+                    lostTime: this.lostTime,
+                    updatedAt: now,
+                    endTime,
+                    summary: {
+                        totalDuration,
+                        completedActions,
+                        totalActions,
+                        actionsPerMinute: apm
+                    },
+                    actions: this.actions.map(action => ({
+                        id: action.id,
+                        text: action.text,
+                        duration: action.duration,
+                        completed: action.completed,
+                        notes: action.notes || '',
+                        startTime: action.startTime || null
+                    }))
+                };
+            }
+
+            persistCurrentSession() {
+                if (!this.actions.length) return;
+
+                const sessionRecord = this.buildSessionRecord();
+                this.currentSessionId = sessionRecord.id;
+                localStorage.setItem(this.activeSessionKey, JSON.stringify(sessionRecord));
+                if (sessionRecord.sessionStartTime) {
+                    this.upsertSavedSession(sessionRecord);
+                }
+            }
+
+            finalizeCurrentSession() {
+                const sessionRecord = this.buildSessionRecord('completed');
+                sessionRecord.endTime = Date.now();
+                this.currentSessionId = sessionRecord.id;
+                localStorage.setItem(this.activeSessionKey, JSON.stringify(sessionRecord));
+                this.upsertSavedSession(sessionRecord);
+            }
+
+            upsertSavedSession(sessionRecord) {
+                const existingIndex = this.savedSessions.findIndex(session => session.id === sessionRecord.id);
+                if (existingIndex === -1) {
+                    this.savedSessions.unshift(sessionRecord);
+                } else {
+                    this.savedSessions[existingIndex] = sessionRecord;
+                    this.savedSessions.sort((a, b) => b.updatedAt - a.updatedAt);
+                }
+                this.saveSavedSessions();
+            }
+
+            renderSessionsView() {
+                const container = document.getElementById('sessionsList');
+                if (!container) return;
+
+                if (!this.savedSessions.length) {
+                    container.innerHTML = `
+                        <div class="sessions-empty">
+                            <p>No saved sessions yet.</p>
+                            <p><small>Your sessions will appear here automatically as you work.</small></p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="sessions-list">
+                        ${this.savedSessions.map(session => `
+                            <div class="session-card">
+                                <div class="session-card-header">
+                                    <div>
+                                        <div class="session-card-title">${this.formatSessionTitle(session)}</div>
+                                        <div class="session-card-subtitle">Updated ${this.formatDateTime(session.updatedAt)}</div>
+                                    </div>
+                                    <span class="session-status ${session.status}">${session.status === 'completed' ? 'Completed' : 'In Progress'}</span>
+                                </div>
+                                <div class="session-meta">
+                                    <div class="session-meta-item">
+                                        <div class="session-meta-label">Progress</div>
+                                        <div class="session-meta-value">${session.summary.completedActions}/${session.summary.totalActions}</div>
+                                    </div>
+                                    <div class="session-meta-item">
+                                        <div class="session-meta-label">Total Time</div>
+                                        <div class="session-meta-value">${this.formatTime(session.summary.totalDuration)}</div>
+                                    </div>
+                                    <div class="session-meta-item">
+                                        <div class="session-meta-label">Lost Time</div>
+                                        <div class="session-meta-value">${this.formatTime(session.lostTime || 0)}</div>
+                                    </div>
+                                    <div class="session-meta-item">
+                                        <div class="session-meta-label">APM</div>
+                                        <div class="session-meta-value">${(session.summary.actionsPerMinute || 0).toFixed(1)}</div>
+                                    </div>
+                                </div>
+                                <div class="session-actions-list">
+                                    ${session.actions.map(action => `
+                                        <div class="session-action-row">
+                                            <div>
+                                                <strong>${action.completed ? '✓' : '○'} ${action.text}</strong>
+                                                <p>${action.notes ? this.escapeHtml(action.notes) : 'No notes added.'}</p>
+                                            </div>
+                                            <span class="action-duration">${this.formatTime(action.duration)}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="session-card-actions">
+                                    <button class="topbar-btn" onclick="tracker.downloadSessionMarkdownById('${session.id}')">Download MD</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            downloadSingleSessionMarkdown() {
+                const sessionRecord = this.buildSessionRecord(this.actions.every(action => action.completed) ? 'completed' : 'in-progress');
+                this.downloadMarkdownFile(
+                    this.generateSessionMarkdown(sessionRecord),
+                    this.getSessionFilename(sessionRecord)
+                );
+            }
+
+            downloadSessionMarkdownById(sessionId) {
+                const session = this.savedSessions.find(entry => entry.id === sessionId);
+                if (!session) return;
+                this.downloadMarkdownFile(this.generateSessionMarkdown(session), this.getSessionFilename(session));
+            }
+
+            downloadAllSessionsMarkdown() {
+                const markdown = this.generateAllSessionsMarkdown();
+                this.downloadMarkdownFile(markdown, `apm-sessions-${this.getDateSlug(Date.now())}.md`);
+            }
+
+            downloadAllDataMarkdown() {
+                const markdown = [
+                    this.generateAllSessionsMarkdown(),
+                    '',
+                    this.generateDecisionJournalMarkdown()
+                ].join('\n');
+                this.downloadMarkdownFile(markdown, `apm-data-${this.getDateSlug(Date.now())}.md`);
+            }
+
+            clearAllData() {
+                const confirmed = window.confirm('Clear all saved APM session and decision journal data from local storage?');
+                if (!confirmed) return;
+
+                localStorage.removeItem(this.storageKey);
+                localStorage.removeItem(this.activeSessionKey);
+                localStorage.removeItem(this.decisionJournalKey);
+                this.savedSessions = [];
+                this.decisionEntries = [];
+                this.renderSessionsView();
+                this.renderDecisionJournal();
+                this.resetSession();
+            }
+
+            openDecisionModal() {
+                const modal = document.getElementById('decisionModal');
+                modal.classList.remove('hidden');
+                modal.setAttribute('aria-hidden', 'false');
+                document.getElementById('journalTitle').focus();
+            }
+
+            closeDecisionModal() {
+                const modal = document.getElementById('decisionModal');
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            showTrackerPhase() {
+                if (this.sessionStartTime && this.actions.length) {
+                    const phaseId = this.actions.every(action => action.completed) ? 'completionPhase' : 'activePhase';
+                    this.showPhase(phaseId);
+                    return;
+                }
+
+                if (this.actions.length) {
+                    this.showPhase('setupPhase');
+                    return;
+                }
+
+                this.showPhase('setupPhase');
+            }
+
+            generateSessionMarkdown(session) {
+                const lines = [
+                    `# APM Session`,
+                    ``,
+                    `- Status: ${session.status === 'completed' ? 'Completed' : 'In Progress'}`,
+                    `- Started: ${session.sessionStartTime ? this.formatDateTime(session.sessionStartTime) : 'Not started'}`,
+                    `- Updated: ${this.formatDateTime(session.updatedAt)}`,
+                    `- Total time: ${this.formatTime(session.summary.totalDuration)}`,
+                    `- Lost time: ${this.formatTime(session.lostTime || 0)}`,
+                    `- Progress: ${session.summary.completedActions}/${session.summary.totalActions}`,
+                    `- Actions per minute: ${(session.summary.actionsPerMinute || 0).toFixed(1)}`,
+                    ``,
+                    `## Actions`,
+                    ``
+                ];
+
+                session.actions.forEach((action, index) => {
+                    lines.push(`### ${index + 1}. ${action.completed ? '[Done]' : '[Pending]'} ${action.text}`);
+                    lines.push(`- Time spent: ${this.formatTime(action.duration)}`);
+                    lines.push(`- Notes: ${action.notes ? action.notes.replace(/\n/g, ' ') : 'None'}`);
+                    lines.push(``);
+                });
+
+                return lines.join('\n');
+            }
+
+            generateAllSessionsMarkdown() {
+                if (!this.savedSessions.length) {
+                    return '# APM Sessions\n\nNo saved sessions available.';
+                }
+
+                return [
+                    '# APM Sessions',
+                    '',
+                    ...this.savedSessions.flatMap((session, index) => [
+                        `## Session ${index + 1}`,
+                        '',
+                        this.generateSessionMarkdown(session),
+                        ''
+                    ])
+                ].join('\n');
+            }
+
+            generateDecisionJournalMarkdown() {
+                if (!this.decisionEntries.length) {
+                    return '# Decision Journal\n\nNo decision journal entries available.';
+                }
+
+                return [
+                    '# Decision Journal',
+                    '',
+                    ...this.decisionEntries.flatMap((entry, index) => [
+                        `## Entry ${index + 1}: ${entry.title || 'Untitled decision'}`,
+                        '',
+                        `- Created: ${this.formatDateTime(entry.createdAt)}`,
+                        `- Time of day: ${entry.timeOfDay || 'Not recorded'}`,
+                        `- Physical and mental state: ${entry.state || 'Not recorded'}`,
+                        '',
+                        this.renderMarkdownSection('Problem statement or frame', entry.problem),
+                        this.renderMarkdownSection('Situation or context', entry.context),
+                        this.renderMarkdownSection('Variables', entry.variables),
+                        this.renderMarkdownSection('Alternatives considered', entry.alternatives),
+                        this.renderMarkdownSection('Range of outcomes', entry.outcomeRange),
+                        this.renderMarkdownSection('Expected outcome and probabilities', entry.expectations),
+                        this.renderMarkdownSection('Worst-case scenario', entry.worstCase),
+                        this.renderMarkdownSection('Opportunity cost', entry.opportunityCost),
+                        ''
+                    ])
+                ].join('\n');
+            }
+
+            saveDecisionEntry() {
+                const entry = {
+                    id: `decision-${Date.now()}`,
+                    createdAt: Date.now(),
+                    title: document.getElementById('journalTitle').value.trim(),
+                    problem: document.getElementById('journalProblem').value.trim(),
+                    context: document.getElementById('journalContext').value.trim(),
+                    variables: document.getElementById('journalVariables').value.trim(),
+                    alternatives: document.getElementById('journalAlternatives').value.trim(),
+                    outcomeRange: document.getElementById('journalOutcomeRange').value.trim(),
+                    expectations: document.getElementById('journalExpectations').value.trim(),
+                    timeOfDay: document.getElementById('journalTimeOfDay').value.trim(),
+                    state: document.getElementById('journalState').value.trim(),
+                    worstCase: document.getElementById('journalWorstCase').value.trim(),
+                    opportunityCost: document.getElementById('journalOpportunityCost').value.trim(),
+                    markdown: ''
+                };
+
+                if (!entry.title) return;
+
+                entry.markdown = this.generateDecisionEntryMarkdown(entry);
+
+                this.decisionEntries.unshift(entry);
+                this.saveDecisionEntries();
+                document.getElementById('decisionJournalForm').reset();
+                this.closeDecisionModal();
+            }
+
+            renderDecisionJournal() {
+                const container = document.getElementById('decisionJournalList');
+                if (!container) return;
+
+                if (!this.decisionEntries.length) {
+                    container.innerHTML = `
+                        <div class="journal-empty">
+                            <p>No decision entries yet.</p>
+                            <p><small>Your recent decisions will appear here once saved.</small></p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div class="journal-card-list">
+                        ${this.decisionEntries.map(entry => `
+                            <div class="journal-card">
+                                <div class="journal-card-top">
+                                    <div>
+                                        <h3>${this.escapeHtml(entry.title)}</h3>
+                                        <p>${this.escapeHtml(entry.problem || entry.context || 'No summary written.')}</p>
+                                    </div>
+                                    <div class="journal-card-time">${this.formatDateTime(entry.createdAt)}</div>
+                                </div>
+                                <div class="journal-card-meta">
+                                    ${this.renderJournalDetail('Expected', entry.expectations)}
+                                    ${this.renderJournalDetail('Alternatives', entry.alternatives)}
+                                    ${this.renderJournalDetail('State', [entry.timeOfDay, entry.state].filter(Boolean).join(' · '))}
+                                </div>
+                                <div class="session-card-actions" style="margin-top: 0.9rem;">
+                                    <button class="topbar-btn" onclick="tracker.downloadDecisionMarkdownById('${entry.id}')">Download MD</button>
+                                    <button class="topbar-btn destructive" onclick="tracker.deleteDecisionEntry('${entry.id}')">Delete</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            renderJournalDetail(label, value) {
+                if (!value) return '';
+                return `<div><strong>${label}:</strong> ${this.escapeHtml(value)}</div>`;
+            }
+
+            deleteDecisionEntry(entryId) {
+                this.decisionEntries = this.decisionEntries.filter(entry => entry.id !== entryId);
+                this.saveDecisionEntries();
+            }
+
+            downloadDecisionMarkdownById(entryId) {
+                const entry = this.decisionEntries.find(item => item.id === entryId);
+                if (!entry) return;
+                const markdown = entry.markdown || this.generateDecisionEntryMarkdown(entry);
+                this.downloadMarkdownFile(markdown, `decision-${this.getDateSlug(entry.createdAt)}-${entry.id}.md`);
+            }
+
+            generateDecisionEntryMarkdown(entry) {
+                return [
+                    `# ${entry.title || 'Untitled decision'}`,
+                    '',
+                    `- Created: ${this.formatDateTime(entry.createdAt)}`,
+                    `- Time of day: ${entry.timeOfDay || 'Not recorded'}`,
+                    `- Physical and mental state: ${entry.state || 'Not recorded'}`,
+                    '',
+                    this.renderMarkdownSection('Problem statement or frame', entry.problem),
+                    this.renderMarkdownSection('Situation or context', entry.context),
+                    this.renderMarkdownSection('Variables and constraints', entry.variables),
+                    this.renderMarkdownSection('Alternatives considered', entry.alternatives),
+                    this.renderMarkdownSection('Range of outcomes', entry.outcomeRange),
+                    this.renderMarkdownSection('Expected outcome and probabilities', entry.expectations),
+                    this.renderMarkdownSection('Worst-case scenario', entry.worstCase),
+                    this.renderMarkdownSection('Opportunity cost', entry.opportunityCost)
+                ].join('\n');
+            }
+
+            renderMarkdownSection(label, value) {
+                return `### ${label}\n${value || 'Not recorded.'}\n`;
+            }
+
+            downloadMarkdownFile(content, filename) {
+                const dataBlob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            getSessionFilename(session) {
+                return `apm-session-${this.getDateSlug(session.updatedAt || Date.now())}-${session.id}.md`;
+            }
+
+            getDateSlug(timestamp) {
+                return new Date(timestamp).toISOString().split('T')[0];
+            }
+
+            formatSessionTitle(session) {
+                const start = session.sessionStartTime ? this.formatDateTime(session.sessionStartTime) : 'Draft session';
+                return `${start} · ${session.summary.completedActions}/${session.summary.totalActions} complete`;
+            }
+
+            formatDateTime(timestamp) {
+                return new Date(timestamp).toLocaleString();
+            }
+
+            escapeHtml(value) {
+                return value
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
             }
 
             formatTime(seconds) {
